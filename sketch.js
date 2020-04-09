@@ -93,6 +93,14 @@ function keyPressed() {
   }
 }
 
+function mousePressed() {
+  if (key == ' ') {
+    bird.jump();
+  } else if (keyCode == ENTER) {
+    reset();
+  }
+}
+
 function errData(err) {
   console.error(err);
 }
