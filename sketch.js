@@ -2,6 +2,7 @@ let bird;
 let pipes = [];
 let score = 0;
 let counter = 0;
+let nWinners = 5; // N top people to come on the leaderboard
 
 let databse;
 let ref;
@@ -12,16 +13,21 @@ let userId;
 let userHasEntry = false;
 let hasLostOnce = false;
 
-let name_ele;
-let score_ele;
-
 function setup() {
-  createCanvas(600, 400);
+  let canvas = createCanvas(600, 400);
+  canvas.parent('canvas');
+  let leaderboard = document.getElementById('leaderboard-container');
+  let h1 = document.createElement('h1');
+  h1.textContent = 'Leaderboard';
+  h1.style.textAlign = 'center';
+  h1.style.textDecoration = 'underline';
+  leaderboard.appendChild(h1);
+  let table = document.createElement('table');
+  table.classList.add('leaderboard');
+  leaderboard.appendChild(table);
+  // Create bird and pipe
   bird = new Bird();
   pipes.push(new Pipe());
-  name_ele = createP().style('font-size', '36px');
-  score_ele = createP('').style('font-size', '36px');
-
   // Initialize Firebase
   firebase.initializeApp(config);
   database = firebase.database();
@@ -34,18 +40,16 @@ function draw() {
   bird.show();
   bird.update(pipes);
   counter++;
-
   for (let i = pipes.length - 1; i >= 0; i--) {
     pipes[i].show();
     pipes[i].update();
-    if (pipes[i].x < 0) {
+    if (pipes[i].x + pipes[i].w < 0) {
       pipes.splice(i, 1);
     }
     if (pipes[i].hits(bird)) {
       gameOver();
     }
   }
-
   if (counter % 100 == 0) {
     pipes.push(new Pipe());
   }
@@ -60,13 +64,15 @@ function gameOver() {
   noLoop();
   if (!name) {
     name = prompt('Enter your name or intials to record your score');
-    name.trim();
+    name = name.trim();
   }
-  if (!userHasEntry) {
-    let data = { name, score: highScore };
-    ref.push(data);
-  } else {
-    database.ref(`scores/${userId}`).set({ name, score: highScore });
+  if (name) {
+    if (!userHasEntry) {
+      let data = { name, score: highScore };
+      ref.push(data);
+    } else {
+      database.ref(`scores/${userId}`).set({ name, score: highScore });
+    }
   }
   push();
   textSize(46);
@@ -94,7 +100,7 @@ function keyPressed() {
 }
 
 function mousePressed() {
-   bird.jump();
+  bird.jump();
 }
 
 function errData(err) {
@@ -108,16 +114,32 @@ function newEntry(data) {
     userId = keys[keys.length - 1];
     userHasEntry = true;
   }
-
-  let bestPlayer = scores[keys[0]];
+  // Sorting scores to get highest scores
+  let scoresArr = [];
   for (let i = 0; i < keys.length; i++) {
-    if (scores[keys[i]].score > bestPlayer.score) {
-      bestPlayer = scores[keys[i]];
-    }
+    let key = keys[i];
+    scoresArr.push({ name: scores[key].name, score: scores[key].score });
   }
-
-  name_ele.html(`The Highest Score yet is bagged by ${bestPlayer.name} with`);
-  score_ele.html(`a remarkable score of ${bestPlayer.score} points!`);
+  scoresArr = scoresArr.sort((a, b) => b.score - a.score).splice(0, nWinners + 1);
+  // Adding users to leaderboard
+  let table = document.querySelector('.leaderboard');
+  table.innerHTML = '';
+  for (let i = 0; i < scoresArr.length; i++) {
+    let { name, score } = scoresArr[i];
+    let row = table.insertRow(i);
+    let cell1 = row.insertCell(0);
+    let cell2 = row.insertCell(1);
+    cell1.textContent = name;
+    cell2.textContent = score;
+    cell1.classList.add('name-cell');
+    cell2.classList.add('score-cell');
+    cell1.style.fontWeight = i == 0 ? 'bold' : 'none';
+    cell2.style.fontWeight = i == 0 ? 'bold' : 'none';
+    cell1.style.fontSize = i == 0 ? '36px' : '24px';
+    cell2.style.fontSize = i == 0 ? '36px' : '24px';
+    cell1.style.background = i == 0 ? 'gold' : i % 2 == 1 ? 'cyan' : 'lime';
+    cell2.style.background = i == 0 ? 'gold' : i % 2 == 1 ? 'cyan' : 'lime';
+  }
 }
 
 function showScore() {
