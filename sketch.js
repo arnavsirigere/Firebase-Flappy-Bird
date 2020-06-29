@@ -43,7 +43,7 @@ function draw() {
   for (let i = pipes.length - 1; i >= 0; i--) {
     pipes[i].show();
     pipes[i].update();
-    if (pipes[i].x + pipes[i].w < 0) {
+    if (pipes[i].x < 0) {
       pipes.splice(i, 1);
     }
     if (pipes[i].hits(bird)) {
