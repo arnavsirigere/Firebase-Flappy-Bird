@@ -145,11 +145,25 @@ function showScore() {
 }
 
 function getLeaderboard(scores, keys, n) {
-  let arr = [];
+  let data = [];
   for (let i = 0; i < keys.length; i++) {
     let key = keys[i];
-    arr.push({ name: scores[key].name, score: scores[key].score });
+    let entry = scores[key];
+    data.push(entry);
   }
-  arr = arr.sort((a, b) => b.score - a.score).splice(0, n);
-  return arr;
+  // Sorting scores
+  data = data.sort((a, b) => b.score - a.score);
+  // Getting the top n non repeating users
+  let leaderboard = [];
+  let names = [];
+  let index = 0;
+  while (leaderboard.length !== n) {
+    let entry = data[index];
+    if (!names.includes(entry.name)) {
+      names.push(entry.name);
+      leaderboard.push(entry);
+    }
+    index++;
+  }
+  return leaderboard;
 }
