@@ -120,7 +120,7 @@ function newEntry(data) {
     let key = keys[i];
     scoresArr.push({ name: scores[key].name, score: scores[key].score });
   }
-  scoresArr = scoresArr.sort((a, b) => b.score - a.score).splice(0, nWinners + 1);
+  scoresArr = scoresArr.sort((a, b) => b.score - a.score).splice(0, nWinners);
   // Adding users to leaderboard
   let table = document.querySelector('.leaderboard');
   table.innerHTML = '';
