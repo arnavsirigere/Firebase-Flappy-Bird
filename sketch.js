@@ -62,17 +62,15 @@ function draw() {
 function gameOver() {
   hasLostOnce = true;
   noLoop();
-  if (!name) {
-    name = prompt('Enter your name or intials to record your score');
+  while (!name) {
+    name = prompt('Please enter your name or intials to record your score!');
     name = name.trim();
   }
-  if (name) {
-    if (!userHasEntry) {
-      let data = { name, score: highScore };
-      ref.push(data);
-    } else {
-      database.ref(`scores/${userId}`).set({ name, score: highScore });
-    }
+  if (!userHasEntry) {
+    let data = { name, score: highScore };
+    ref.push(data);
+  } else {
+    database.ref(`scores/${userId}`).set({ name, score: highScore });
   }
   push();
   textSize(46);
