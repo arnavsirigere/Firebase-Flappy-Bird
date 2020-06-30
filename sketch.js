@@ -114,14 +114,8 @@ function newEntry(data) {
     userId = keys[keys.length - 1];
     userHasEntry = true;
   }
-  // Sorting scores to get highest scores
-  let scoresArr = [];
-  for (let i = 0; i < keys.length; i++) {
-    let key = keys[i];
-    scoresArr.push({ name: scores[key].name, score: scores[key].score });
-  }
-  scoresArr = scoresArr.sort((a, b) => b.score - a.score).splice(0, nWinners);
   // Adding users to leaderboard
+  let scoresArr = getLeaderboard(scores, keys, nWinners);
   let table = document.querySelector('.leaderboard');
   table.innerHTML = '';
   for (let i = 0; i < scoresArr.length; i++) {
@@ -148,4 +142,14 @@ function showScore() {
   text(`Score: ${score}`, 24, 32);
   textSize(28);
   text(`High Score: ${highScore}`, 24, 60);
+}
+
+function getLeaderboard(scores, keys, n) {
+  let arr = [];
+  for (let i = 0; i < keys.length; i++) {
+    let key = keys[i];
+    arr.push({ name: scores[key].name, score: scores[key].score });
+  }
+  arr = arr.sort((a, b) => b.score - a.score).splice(0, n);
+  return arr;
 }
