@@ -64,13 +64,15 @@ function gameOver() {
   noLoop();
   while (!name) {
     name = prompt('Please enter your name or intials to record your score!');
-    name = name.trim();
   }
-  if (!userHasEntry) {
-    let data = { name, score: highScore };
-    ref.push(data);
-  } else {
-    database.ref(`scores/${userId}`).set({ name, score: highScore });
+  if (name) {
+    name = name.trim();
+    if (!userHasEntry) {
+      let data = { name, score: highScore };
+      ref.push(data);
+    } else {
+      database.ref(`scores/${userId}`).set({ name, score: highScore });
+    }
   }
   push();
   textSize(46);
