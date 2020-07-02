@@ -52,6 +52,7 @@ function draw() {
   }
   if (counter % 80 == 0) {
     pipes.push(new Pipe());
+    counter = 0;
   }
   showScore();
   if (score > highScore) {
