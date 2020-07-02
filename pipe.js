@@ -5,7 +5,7 @@ class Pipe {
     this.spacing = 150;
     this.top = random(height - this.spacing);
     this.bottom = this.top + this.spacing;
-    this.speed = 2;
+    this.speed = 3;
     this.passed = false;
   }
 

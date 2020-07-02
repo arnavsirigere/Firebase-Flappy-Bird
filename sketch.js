@@ -50,7 +50,7 @@ function draw() {
       gameOver();
     }
   }
-  if (counter % 100 == 0) {
+  if (counter % 80 == 0) {
     pipes.push(new Pipe());
   }
   showScore();
